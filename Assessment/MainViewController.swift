@@ -9,7 +9,7 @@ import UIKit
 
 class MainViewController: UITableViewController {
 
-    var users:[User] = []
+  var users:[User] = []
 
   @IBAction func refreshSelected(_ sender: UIBarButtonItem) {
     loadStackExchangeData()
@@ -21,7 +21,7 @@ class MainViewController: UITableViewController {
     loadStackExchangeData()
   }
 
-  func loadStackExchangeData(){
+  private func loadStackExchangeData(){
     APIClass.getFrontPageOfStackExchange { (userArray, err) in
       guard err == nil else{
         self.showErrorAlert(err)
@@ -35,7 +35,7 @@ class MainViewController: UITableViewController {
   }
 
   // MARK: - Helpers
-  func showErrorAlert(_ err:Error?){
+  private func showErrorAlert(_ err:Error?){
     let alert = UIAlertController(title: "Error", message: err?.localizedDescription ?? "Error - Can not get the front page", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
     self.present(alert, animated: true, completion: nil)

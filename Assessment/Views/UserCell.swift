@@ -18,6 +18,7 @@ class UserCell: UITableViewCell {
 
   var requestReceipt:RequestReceipt?
   var user:User?
+  let textSeparator = NSAttributedString.init(string: " | ", attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:UIColor.label])
 
   override func awakeFromNib() {
       super.awakeFromNib()
@@ -31,34 +32,26 @@ class UserCell: UITableViewCell {
     self.userNameLabel.text = user.display_name ?? "Not Available"
   }
 
-  func displayBadgeText(_ dictionary:[String : Int]?){
-
+  private func displayBadgeText(_ dictionary:[String : Int]?){
     guard dictionary != nil else{
       return
     }
-    let attributedText = NSMutableAttributedString()
-    if let goldValue = dictionary!["gold"]{
-      let text =  "•" + " " + String(goldValue)
-      let goldText = NSAttributedString.init(string: text, attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:GoldColor])
-      attributedText.append(goldText)
+    let badgeText = NSMutableAttributedString()
+    if let goldBadgeValue = dictionary!["gold"]{
+      badgeText.append(formatBadgeValue(goldBadgeValue, with: GoldColor))
     }
-    if let silverValue = dictionary!["silver"]{
-      attributedText.append(NSAttributedString.init(string: " | ", attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:UIColor.label]))
-      let text =  "•" + " " + String(silverValue)
-      let silverText = NSAttributedString.init(string: text, attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:SilverColor])
-      attributedText.append(silverText)
+    if let silverBadgeValue = dictionary!["silver"]{
+      badgeText.append(textSeparator)
+      badgeText.append(formatBadgeValue(silverBadgeValue, with: SilverColor))
     }
-    if let bronzeValue = dictionary!["bronze"]{
-      attributedText.append(NSAttributedString.init(string: " | ", attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:UIColor.label]))
-      let text =  "•" + " " + String(bronzeValue)
-      let bronzeText = NSAttributedString.init(string: text, attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:BronzeColor])
-      attributedText.append(bronzeText)
+    if let bronzeBadgeValue = dictionary!["bronze"]{
+      badgeText.append(textSeparator)
+      badgeText.append(formatBadgeValue(bronzeBadgeValue, with: BronzeColor))
     }
-    badgesLabel.attributedText = attributedText
+    badgesLabel.attributedText = badgeText
   }
 
-  func fetchAndDisplayGravatar(_ profileImage:String?){
-
+  private func fetchAndDisplayGravatar(_ profileImage:String?){
     guard let profileImageLink = profileImage,
           let profileImageUrl =  URL(string: profileImageLink) else {
           return
@@ -68,7 +61,7 @@ class UserCell: UITableViewCell {
       self?.gravatarImageView.image = UIImage(named: "DogPlaceHolder")!
       self?.activityIndicator.startAnimating()
     }
-
+    // Download gravatar
     let urlRequest = URLRequest(url: profileImageUrl)
     requestReceipt = imageDownloader.download(urlRequest, completion:  { response in
       if case .success(let image) = response.result {
@@ -81,6 +74,12 @@ class UserCell: UITableViewCell {
   }
 
   // MARK: - Helpers
+
+  private func formatBadgeValue(_ value:Int, with color:UIColor)->NSAttributedString{
+    let text = "•" + " " + String(value)
+    return NSAttributedString.init(string: text, attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:color])
+  }
+  
   func clear(){
     badgesLabel.text = nil
     userNameLabel.text = nil

@@ -21,7 +21,6 @@ class APIClass: NSObject {
   static var stackExchangeUrl = "https://api.stackexchange.com/2.2/users?site=stackoverflow"
 
   class func getFrontPageOfStackExchange(completion:@escaping (_ users:[User]?,_ FetchUsersError:Error?)->()){
-
     let request = AF.request(stackExchangeUrl)
     request.responseDecodable(of: Root.self) { (response) in
       guard let root = response.value else {
