@@ -33,18 +33,15 @@ class UserCell: UITableViewCell {
   }
 
   private func displayBadgeText(_ dictionary:[String : Int]?){
-    guard dictionary != nil else{
-      return
-    }
     let badgeText = NSMutableAttributedString()
-    if let goldBadgeValue = dictionary!["gold"]{
+    if let goldBadgeValue = dictionary?["gold"]{
       badgeText.append(formatBadgeValue(goldBadgeValue, with: GoldColor))
     }
-    if let silverBadgeValue = dictionary!["silver"]{
+    if let silverBadgeValue = dictionary?["silver"]{
       badgeText.append(textSeparator)
       badgeText.append(formatBadgeValue(silverBadgeValue, with: SilverColor))
     }
-    if let bronzeBadgeValue = dictionary!["bronze"]{
+    if let bronzeBadgeValue = dictionary?["bronze"]{
       badgeText.append(textSeparator)
       badgeText.append(formatBadgeValue(bronzeBadgeValue, with: BronzeColor))
     }
@@ -74,7 +71,6 @@ class UserCell: UITableViewCell {
   }
 
   // MARK: - Helpers
-
   private func formatBadgeValue(_ value:Int, with color:UIColor)->NSAttributedString{
     let text = "•" + " " + String(value)
     return NSAttributedString.init(string: text, attributes: [.font:UIFont.systemFont(ofSize: 18.0),.foregroundColor:color])

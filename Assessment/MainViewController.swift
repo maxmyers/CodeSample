@@ -24,7 +24,7 @@ class MainViewController: UITableViewController {
   private func loadStackExchangeData(){
     APIClass.getFrontPageOfStackExchange { (userArray, err) in
       guard err == nil else{
-        self.showErrorAlert(err)
+        self.showErrorAlert(err!)
         return
       }
       if let users_ = userArray{
@@ -35,14 +35,13 @@ class MainViewController: UITableViewController {
   }
 
   // MARK: - Helpers
-  private func showErrorAlert(_ err:Error?){
-    let alert = UIAlertController(title: "Error", message: err?.localizedDescription ?? "Error - Can not get the front page", preferredStyle: .alert)
+  private func showErrorAlert(_ err:Error){
+    let alert = UIAlertController(title: "Error", message: err.localizedDescription, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
     self.present(alert, animated: true, completion: nil)
   }
 
   // MARK: - Table view delegate
-
   override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
     if let headerView = Bundle.main.loadNibNamed("HeaderView", owner: nil, options: nil)?.first as? UIView{
       return headerView
@@ -69,7 +68,6 @@ class MainViewController: UITableViewController {
   }
 
   // MARK: - Table view data source
-
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return users.count
   }
